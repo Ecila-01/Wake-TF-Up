@@ -8,7 +8,7 @@ An offline Android alarm clock that gets you out of bed. Place your wake-up QR a
 
 ## Installation
 
-Download the APK from [Releases](https://github.com/Ecila-01/Wake-TF-Up/releases) when available.
+Download the APK from [Releases](https://github.com/Ecila-01/Wake-TF-Up/releases).
 
 ## Run locally
 

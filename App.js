@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, AppState, BackHandler, Linking, PermissionsAndroid, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, AppState, BackHandler, Linking, Modal, PermissionsAndroid, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { ensureToken } from './src/storage/token';
@@ -13,6 +13,7 @@ import { THEMES, TYPE } from './src/ui/theme';
 import AlarmEditor from './src/ui/AlarmEditor';
 import QrSetup from './src/ui/QrSetup';
 import RingingScreen from './src/ui/RingingScreen';
+import SwipeAlarm from './src/ui/SwipeAlarm';
 
 export default function App() {
   return <SafeAreaProvider><AlarmApp /></SafeAreaProvider>;
@@ -28,6 +29,8 @@ function AlarmApp() {
   const [prepared, setPrepared] = useState(false);
   const [page, setPage] = useState('alarms');
   const [editor, setEditor] = useState(null);
+  const [swipedAlarm, setSwipedAlarm] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
   const [preview, setPreview] = useState(null);
   const [hiddenRinging, setHiddenRinging] = useState(null);
   const [error, setError] = useState('');
@@ -162,7 +165,11 @@ function AlarmApp() {
   const clock = next && timestampClock(next.nextAt);
   const sorted = [...state.alarms].sort((a, b) => a.hour * 60 + a.minute - b.hour * 60 - b.minute);
   const requiresPermissions = api.isNativeAlarm && ready && (!state.exact || !state.notifications || !state.fullScreen);
-  const navigate = destination => { setPage(destination); setMessage(''); };
+  const navigate = destination => { setPage(destination); setSwipedAlarm(null); setMessage(''); };
+  const confirmDelete = async () => {
+    try { await remove(deleteTarget); setDeleteTarget(null); setSwipedAlarm(null); }
+    catch (failure) { setDeleteTarget(null); setError(failure.message || 'Could not delete the alarm. Try again.'); }
+  };
 
   return <SafeAreaView edges={['top', 'left', 'right']} style={[styles.root, { backgroundColor: colors.bg }]}>
     <StatusBar style={mode === 'dark' ? 'light' : 'dark'} />
@@ -192,22 +199,26 @@ function AlarmApp() {
           {ready && !sorted.length && <Text style={[TYPE.body, { color: colors.muted, paddingBottom: 24 }]}>No alarms yet. Add one below to start.</Text>}
           {sorted.map(alarm => {
             const time = clockParts(alarm.hour, alarm.minute);
-            return <View key={alarm.id} style={[styles.alarm, { borderColor: colors.outline, backgroundColor: colors.surface }]}>
+            return <SwipeAlarm key={alarm.id} colors={colors} open={swipedAlarm === alarm.id} disabled={busy} label={alarm.label || `${time.time} ${time.period} alarm`}
+              onOpenChange={open => setSwipedAlarm(open ? alarm.id : null)} onDelete={() => setDeleteTarget(alarm)}>
+              <View style={[styles.alarm, { borderColor: colors.outline, backgroundColor: colors.surface }]}>
               <View style={styles.alarmRow}>
-                <Pressable accessibilityRole="button" accessibilityLabel={`Edit ${time.time} ${time.period} ${alarm.label || 'alarm'}`} disabled={busy} onPress={() => { setMessage(''); setEditor(alarm); }} style={{ flex: 1, minWidth: 0 }}>
+                <Pressable accessibilityRole="button" accessibilityLabel={`Edit ${time.time} ${time.period} ${alarm.label || 'alarm'}`} disabled={busy}
+                  accessibilityActions={[{ name: 'delete', label: 'Delete alarm' }]} onAccessibilityAction={event => { if (event.nativeEvent.actionName === 'delete') setDeleteTarget(alarm); }}
+                  onPress={() => { if (swipedAlarm === alarm.id) { setSwipedAlarm(null); return; } setMessage(''); setEditor(alarm); }} style={{ flex: 1, minWidth: 0 }}>
                   <View style={styles.alarmTimeRow}><Text style={[styles.alarmTime, { color: alarm.enabled ? colors.text : colors.muted }]}>{time.time}</Text><Text style={[TYPE.body, { color: colors.muted }]}>{time.period}</Text></View>
                   <Text style={[TYPE.label, { color: colors.text, flexShrink: 1 }]}>{alarm.label || 'Alarm'}</Text>
                   <Text style={[TYPE.small, { color: colors.muted, marginTop: 4 }]}>{repeatLabel(alarm.days)} · {alarm.challenge === 'qr' ? 'QR challenge' : 'Standard'}{alarm.snoozed ? ' · Snoozed' : ''}</Text>
                 </Pressable>
                 <Toggle value={alarm.enabled} colors={colors} disabled={busy} label={`${alarm.enabled ? 'Disable' : 'Enable'} ${alarm.label || `${time.time} ${time.period} alarm`}`} onChange={enabled => toggle(alarm, enabled)} />
               </View>
-            </View>;
+            </View></SwipeAlarm>;
           })}
         </> : page === 'qr' ? <>
           <View style={styles.pageTitle}><Text accessibilityRole="header" style={[TYPE.title, { color: colors.text }]}>Wake-up QR</Text><Text style={[TYPE.body, { color: colors.muted }]}>Your first step out of bed.</Text></View>
           <QrSetup key={token || 'loading'} token={token} prepared={prepared} onPrepared={prepare} colors={colors} native={api.isNativeAlarm} />
         </> : <>
-          <View style={styles.pageTitle}><Text accessibilityRole="header" style={[TYPE.title, { color: colors.text }]}>Settings</Text><Text style={[TYPE.body, { color: colors.muted }]}>Make your next wake-up ready.</Text></View>
+          <View style={styles.pageTitle}><Text accessibilityRole="header" style={[TYPE.title, { color: colors.text }]}>Settings</Text></View>
           <View style={[styles.settingsGroup, { backgroundColor: colors.surface, borderColor: colors.outline }]}>
             <View style={styles.settingRow}><View style={{ flex: 1 }}><Text style={[TYPE.label, { color: colors.text }]}>Dark appearance</Text><Text style={[TYPE.small, { color: colors.muted }]}>A dimmer screen for bedtime.</Text></View><Toggle colors={colors} value={mode === 'dark'} label="Dark appearance" onChange={changeTheme} /></View>
           </View>
@@ -219,21 +230,12 @@ function AlarmApp() {
                   <Text style={[TYPE.small, { color: allowed ? colors.success : colors.primary }]}>{allowed ? 'Allowed' : 'Enable'}</Text><Icon name={allowed ? 'check' : 'chevron'} color={allowed ? colors.success : colors.primary} size={18} />
                 </Pressable>)}
             </View></>}
-          <View style={styles.help}><Text accessibilityRole="header" style={[TYPE.section, { color: colors.text }]}>Before you turn in</Text>
-            <Text style={[TYPE.body, { color: colors.muted }]}>Alarms use your phone’s alarm tone and alarm volume. Keep the phone powered on and check its alarm volume.</Text>
-            <Text style={[TYPE.body, { color: colors.muted }]}>Force-stopping the app prevents alarms until you reopen it. Android settings and device policies can affect lock-screen alerts.</Text>
-            <Text style={[TYPE.body, { color: colors.muted }]}>QR alarms need the matching code from this installation. Keep a printed copy or display it on another device.</Text>
-          </View>
-          {!api.isNativeAlarm && <View style={{ gap: 12 }}><Text accessibilityRole="header" style={[TYPE.section, { color: colors.text }]}>Try the ringing screens</Text><Text style={[TYPE.body, { color: colors.muted }]}>These previews make no sound and schedule no alarms.</Text>
-            <Button colors={colors} variant="tonal" icon="qr" onPress={() => setPreview({ ...newAlarm('qr'), label: 'Morning alarm' })}>Preview QR alarm</Button>
-            <Button colors={colors} variant="tonal" icon="alarm" onPress={() => setPreview({ ...newAlarm('normal'), label: 'Morning alarm' })}>Preview standard alarm</Button>
-          </View>}
           <View style={styles.support}>
             <Pressable accessibilityRole="link" accessibilityHint="Opens Ko-fi in your browser. Internet required." onPress={openSupport}
-              style={({ pressed }) => [styles.supportLink, { opacity: pressed ? 0.7 : 1 }]}>
-              <Text style={[TYPE.small, { color: colors.primary, textDecorationLine: 'underline' }]}>Support on Ko-fi</Text>
+              style={({ pressed }) => [styles.supportLink, { backgroundColor: pressed ? colors.container : 'transparent', borderColor: colors.outline }]}>
+              <Text style={[TYPE.label, { color: colors.primary }]}>Support on Ko-fi</Text>
+              <Icon name="arrow" color={colors.primary} size={20} />
             </Pressable>
-            <Text style={[TYPE.small, { color: colors.muted }]}>Optional · Opens in your browser</Text>
           </View>
         </>}
       </ScrollView>
@@ -249,6 +251,14 @@ function AlarmApp() {
     </View>
     {editor && <AlarmEditor key={editor.id} alarm={editor} colors={colors} existing={state.alarms.some(item => item.id === editor.id)} onClose={() => setEditor(null)} onSave={save} onDelete={remove} token={token} prepared={prepared} onPrepared={prepare} native={api.isNativeAlarm} />}
     {active && <RingingScreen key={`${isPreview ? 'preview' : 'alarm'}-${active.id}`} alarm={active} colors={colors} now={now} preview={isPreview} onDismiss={dismiss} onSnooze={snooze} onClosePreview={() => setPreview(null)} onBack={() => setHiddenRinging(active.id)} />}
+    <Modal transparent visible={Boolean(deleteTarget)} animationType="none" onRequestClose={() => { if (!busy) setDeleteTarget(null); }}>
+      <View style={styles.dialogOverlay}><View accessibilityRole="alert" style={[styles.dialog, { backgroundColor: colors.surface }]}>
+        <Text accessibilityRole="header" style={[TYPE.section, { color: colors.text }]}>Delete alarm?</Text>
+        <Text style={[TYPE.body, { color: colors.muted }]}>This removes the alarm and its schedule.</Text>
+        <Button colors={colors} disabled={busy} variant="tonal" onPress={() => setDeleteTarget(null)}>Keep alarm</Button>
+        <Button colors={colors} busy={busy} variant="danger" onPress={confirmDelete}>Delete alarm</Button>
+      </View></View>
+    </Modal>
   </SafeAreaView>;
 }
 
@@ -263,6 +273,6 @@ const styles = StyleSheet.create({
   navigation: { flexDirection: 'row', borderTopWidth: 1, paddingHorizontal: 12, paddingTop: 10 }, navItem: { flex: 1, minHeight: 64, alignItems: 'center', justifyContent: 'center', gap: 4 }, navIcon: { width: 64, height: 32, borderRadius: 18, alignItems: 'center', justifyContent: 'center' },
   snackbar: { flexDirection: 'row', alignItems: 'center', paddingLeft: 18, paddingRight: 6, marginHorizontal: 24, marginTop: 4, borderRadius: 8, minHeight: 52, gap: 4 }, messageClose: { width: 48, minHeight: 48, alignItems: 'center', justifyContent: 'center' },
   settingsGroup: { borderWidth: 1, borderRadius: 16, overflow: 'hidden' }, settingRow: { minHeight: 84, padding: 18, flexDirection: 'row', alignItems: 'center', gap: 12 }, permissionRow: { minHeight: 88, padding: 18, flexDirection: 'row', alignItems: 'center', gap: 10 },
-  help: { gap: 14, paddingVertical: 12 },
-  support: { alignItems: 'flex-start', marginTop: 8 }, supportLink: { minHeight: 48, justifyContent: 'center', paddingHorizontal: 8, marginLeft: -8 },
+  support: { marginTop: 16 }, supportLink: { minHeight: 56, borderWidth: 1, borderRadius: 16, paddingHorizontal: 18, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12 },
+  dialogOverlay: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 24, backgroundColor: '#00000066' }, dialog: { width: '100%', maxWidth: 360, padding: 24, borderRadius: 28, gap: 16 },
 });

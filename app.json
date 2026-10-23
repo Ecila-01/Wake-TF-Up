@@ -11,7 +11,7 @@
       "backgroundColor": "#F9F9FC"
     },
     "android": {
-      "versionCode": 1,
+      "versionCode": 2,
       "package": "com.ecila.waketfup",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",

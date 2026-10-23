@@ -104,3 +104,12 @@ eas-build/
 # =========================
 *.orig.*
 *.pem
+
+# Local design context and working notes
+.impeccable/
+/PRODUCT.md
+/DESIGN.md
+/CHANGELOG.md
+/docs/ux-review.md
+/docs/verification.md
+/docs/dependency-audit.md

@@ -7,6 +7,7 @@ import { Button, IconButton, Notice } from './controls';
 import QrSetup from './QrSetup';
 import { TYPE } from './theme';
 import SoundPicker from './SoundPicker';
+import TimeWheel from './TimeWheel';
 import { BUILTIN_SOUNDS, DEFAULT_SOUND } from '../alarms/sounds';
 
 export default function AlarmEditor({ alarm, colors, onClose, onSave, onDelete, existing, token, prepared, onPrepared, native }) {
@@ -59,11 +60,9 @@ export default function AlarmEditor({ alarm, colors, onClose, onSave, onDelete, 
             {soundOpen ? <><SoundPicker value={sound.id} onChange={setSound} colors={colors} /><Button colors={colors} onPress={() => setSoundOpen(false)}>Done</Button></> : setup ? <QrSetup token={token} prepared={prepared} colors={colors} native={native} onPrepared={async () => { await onPrepared(); setSetup(false); }} /> : <>
               <Text style={[TYPE.label, { color: colors.muted }]}>Time</Text>
               <View style={[styles.timeFields, { backgroundColor: colors.container }]}>
-                <View><TextInput accessibilityLabel="Hour, 1 to 12" selectTextOnFocus value={hour} onChangeText={setHour} keyboardType="number-pad" maxLength={2}
-                  selectionColor={colors.primary} style={[styles.timeInput, { color: colors.text }]} /><Text style={[TYPE.small, { color: colors.muted, textAlign: 'center' }]}>Hour</Text></View>
-                <Text style={[styles.colon, { color: colors.muted }]}>:</Text>
-                <View><TextInput accessibilityLabel="Minute, 0 to 59" selectTextOnFocus value={minute} onChangeText={setMinute} keyboardType="number-pad" maxLength={2}
-                  selectionColor={colors.primary} style={[styles.timeInput, { color: colors.text }]} /><Text style={[TYPE.small, { color: colors.muted, textAlign: 'center' }]}>Minute</Text></View>
+                <TimeWheel label="Hour" value={hour} min={1} max={12} onChange={setHour} colors={colors} />
+                <Text style={[styles.colon, { color: colors.muted, marginBottom: 28 }]}>:</Text>
+                <TimeWheel label="Minute" value={minute} min={0} max={59} onChange={setMinute} colors={colors} />
                 <View style={styles.periods}>{['AM', 'PM'].map((period, index) => <Pressable key={period} accessibilityRole="radio" aria-checked={pm === Boolean(index)} accessibilityState={{ checked: pm === Boolean(index) }} onPress={() => setPm(Boolean(index))}
                   style={[styles.period, { backgroundColor: pm === Boolean(index) ? colors.primary : colors.surface }]}><Text style={[TYPE.label, { color: pm === Boolean(index) ? colors.onPrimary : colors.muted }]}>{period}</Text></Pressable>)}</View>
               </View>
@@ -115,7 +114,7 @@ export default function AlarmEditor({ alarm, colors, onClose, onSave, onDelete, 
 const styles = StyleSheet.create({
   root: { flex: 1 }, shell: { flex: 1, width: '100%', maxWidth: 480, alignSelf: 'center' }, header: { minHeight: 72, paddingHorizontal: 12, flexDirection: 'row', alignItems: 'center', gap: 8 },
   content: { padding: 24, paddingTop: 12, paddingBottom: 40, gap: 12 }, timeFields: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 4, borderRadius: 16, paddingVertical: 20, paddingHorizontal: 8 },
-  timeInput: { width: 82, minHeight: 76, fontSize: 54, fontWeight: '400', fontVariant: ['tabular-nums'], textAlign: 'center', padding: 0, borderRadius: 8 }, colon: { fontSize: 40, alignSelf: 'flex-start', marginTop: 10 },
+  colon: { fontSize: 36 },
   periods: { marginLeft: 10, gap: 8 }, period: { minWidth: 56, minHeight: 48, borderRadius: 12, alignItems: 'center', justifyContent: 'center' }, name: { minHeight: 56, borderWidth: 1, borderRadius: 12, padding: 16 },
   fieldHeading: { marginTop: 16 }, sectionRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }, textTarget: { minHeight: 48, paddingHorizontal: 12, justifyContent: 'center' },
   days: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 }, day: { minWidth: 48, minHeight: 48, borderWidth: 1, borderRadius: 24, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 8 },

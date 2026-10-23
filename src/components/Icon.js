@@ -5,6 +5,7 @@ const paths = {
   // Lucide alarm-clock outline; upstream notice: licenses/LUCIDE.txt.
   alarm: 'M12 9v4l2 2M5 3 2 6M22 6l-3-3M6.38 18.7 4 21M17.64 18.67 20 21',
   plus: 'M12 5v14M5 12h14',
+  trash: 'M3 6h18M9 6V4h6v2M5 6l1 14h12l1-14M10 10v6M14 10v6',
   close: 'm6 6 12 12M6 18 18 6',
   back: 'm14 5-7 7 7 7',
   arrow: 'M5 12h14m-5-5 5 5-5 5',
