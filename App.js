@@ -143,6 +143,10 @@ function AlarmApp() {
     const next = dark ? 'dark' : 'light';
     try { await setThemeMode(next); setMode(next); } catch { setError('Could not save appearance. Try again.'); }
   };
+  const openSupport = async () => {
+    try { await Linking.openURL('https://ko-fi.com/ecila01'); }
+    catch { setMessage('Could not open Ko-fi. Visit ko-fi.com/ecila01 in your browser.'); }
+  };
   const ringing = state.active[0];
   const active = (ringing?.id !== hiddenRinging ? ringing : null) || (!ringing ? preview : null);
   const isPreview = Boolean(preview && !state.active.length);
@@ -224,6 +228,13 @@ function AlarmApp() {
             <Button colors={colors} variant="tonal" icon="qr" onPress={() => setPreview({ ...newAlarm('qr'), label: 'Morning alarm' })}>Preview QR alarm</Button>
             <Button colors={colors} variant="tonal" icon="alarm" onPress={() => setPreview({ ...newAlarm('normal'), label: 'Morning alarm' })}>Preview standard alarm</Button>
           </View>}
+          <View style={styles.support}>
+            <Pressable accessibilityRole="link" accessibilityHint="Opens Ko-fi in your browser. Internet required." onPress={openSupport}
+              style={({ pressed }) => [styles.supportLink, { opacity: pressed ? 0.7 : 1 }]}>
+              <Text style={[TYPE.small, { color: colors.primary, textDecorationLine: 'underline' }]}>Support on Ko-fi</Text>
+            </Pressable>
+            <Text style={[TYPE.small, { color: colors.muted }]}>Optional · Opens in your browser</Text>
+          </View>
         </>}
       </ScrollView>
       {message ? <View accessibilityLiveRegion="polite" style={[styles.snackbar, { backgroundColor: colors.text }]}><Text style={[TYPE.small, { color: colors.bg, flex: 1 }]}>{message}</Text><Pressable accessibilityRole="button" accessibilityLabel="Dismiss status message" onPress={() => setMessage('')} style={styles.messageClose}><Icon name="close" size={18} color={colors.bg} /></Pressable></View> : null}
@@ -253,4 +264,5 @@ const styles = StyleSheet.create({
   snackbar: { flexDirection: 'row', alignItems: 'center', paddingLeft: 18, paddingRight: 6, marginHorizontal: 24, marginTop: 4, borderRadius: 8, minHeight: 52, gap: 4 }, messageClose: { width: 48, minHeight: 48, alignItems: 'center', justifyContent: 'center' },
   settingsGroup: { borderWidth: 1, borderRadius: 16, overflow: 'hidden' }, settingRow: { minHeight: 84, padding: 18, flexDirection: 'row', alignItems: 'center', gap: 12 }, permissionRow: { minHeight: 88, padding: 18, flexDirection: 'row', alignItems: 'center', gap: 10 },
   help: { gap: 14, paddingVertical: 12 },
+  support: { alignItems: 'flex-start', marginTop: 8 }, supportLink: { minHeight: 48, justifyContent: 'center', paddingHorizontal: 8, marginLeft: -8 },
 });
