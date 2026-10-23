@@ -1,0 +1,22 @@
+{
+  "expo": {
+    "name": "Wake TF Up",
+    "slug": "wake-tf-up",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#F9F9FC"
+    },
+    "android": {
+      "versionCode": 1,
+      "package": "com.ecila.waketfup",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#F9F9FC"
+      }
+    }
+  }
+}

@@ -1,0 +1,112 @@
+[
+  {
+    "id": "digital_beep",
+    "name": "Digital Beep",
+    "author": "Felfa",
+    "sourceId": 148297,
+    "source": "https://freesound.org/people/Felfa/sounds/148297/",
+    "license": "CC0-1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "audioUrl": "https://cdn.freesound.org/previews/148/148297_2103589-hq.mp3",
+    "sha256": "87d993d3932f7bfc424906f6a4fc99cce5d9240ce53e584d12a6eb3164208fea"
+  },
+  {
+    "id": "electronic_alarm",
+    "name": "Electronic Alarm",
+    "author": "reecord2",
+    "sourceId": 96063,
+    "source": "https://freesound.org/people/reecord2/sounds/96063/",
+    "license": "CC0-1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "audioUrl": "https://cdn.freesound.org/previews/96/96063_704006-hq.mp3",
+    "sha256": "bf0bda43ad46599681a44bcd07bebc7b86a7284451532f2acb5779b5f086e5a6"
+  },
+  {
+    "id": "classic_alarm",
+    "name": "Classic Alarm",
+    "author": "ZyryTSounds",
+    "sourceId": 219244,
+    "source": "https://freesound.org/people/ZyryTSounds/sounds/219244/",
+    "license": "CC0-1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "audioUrl": "https://cdn.freesound.org/previews/219/219244_4082826-hq.mp3",
+    "sha256": "8d59234daffeb264da86eb7de91d435bc80ea17e56923cf7716d5f0fadbf255f"
+  },
+  {
+    "id": "synth_alarm",
+    "name": "Synth Alarm",
+    "author": "Dnab55",
+    "sourceId": 128138,
+    "source": "https://freesound.org/people/Dnab55/sounds/128138/",
+    "license": "CC0-1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "audioUrl": "https://cdn.freesound.org/previews/128/128138_1542160-hq.mp3",
+    "sha256": "d31eee3c483c76e9ea2206248858543dd201989ea5ee3c79cc213377168fb7bb"
+  },
+  {
+    "id": "rapid_alarm",
+    "name": "Rapid Alarm",
+    "author": "Dishings",
+    "sourceId": 752106,
+    "source": "https://freesound.org/people/Dishings/sounds/752106/",
+    "license": "CC0-1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "audioUrl": "https://cdn.freesound.org/previews/752/752106_14926844-hq.mp3",
+    "sha256": "d41ee13ce26b6d3b7308f1e915f4bc4e90bd5b91e6d0b8411f2f1b4ef6b1bb5e"
+  },
+  {
+    "id": "warning_beep",
+    "name": "Warning Beep",
+    "author": "SamsterBirdies",
+    "sourceId": 467882,
+    "source": "https://freesound.org/people/SamsterBirdies/sounds/467882/",
+    "license": "CC0-1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "audioUrl": "https://cdn.freesound.org/previews/467/467882_5487341-hq.mp3",
+    "sha256": "cb606e539a3ecfb06e652b497b554acffc3a1beadb5097ad7cad869eecc8bdd4"
+  },
+  {
+    "id": "bedside_beep",
+    "name": "Bedside Beep",
+    "author": "SpliceSound",
+    "sourceId": 369880,
+    "source": "https://freesound.org/people/SpliceSound/sounds/369880/",
+    "license": "CC0-1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "audioUrl": "https://cdn.freesound.org/previews/369/369880_1480854-hq.mp3",
+    "sha256": "bbcb068349763ccb416556166ea722135a574f8076ce9ba8b4340fc1a8fa7e7c"
+  },
+  {
+    "id": "clock_radio",
+    "name": "Clock Radio Buzzer",
+    "author": "Lynx_5969",
+    "sourceId": 418898,
+    "source": "https://freesound.org/people/Lynx_5969/sounds/418898/",
+    "license": "CC0-1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "audioUrl": "https://cdn.freesound.org/previews/418/418898_7844747-hq.mp3",
+    "sha256": "463e9c4f4995b76d520fae45cf9bd32e0eaa0d96f5dd63e947b808ad8e36f3c9"
+  },
+  {
+    "id": "digital_clock",
+    "name": "Digital Clock",
+    "author": "Sadiquecat",
+    "sourceId": 806272,
+    "source": "https://freesound.org/people/Sadiquecat/sounds/806272/",
+    "license": "CC0-1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "audioUrl": "https://cdn.freesound.org/previews/806/806272_5287430-hq.mp3",
+    "sha256": "9f8fc12f8a51256a62406106d2dbfa6fa62be177a873d774f8a59a6b6251ea50"
+  },
+  {
+    "id": "lofi_clock",
+    "name": "Lo-Fi Clock",
+    "author": "Sadiquecat",
+    "sourceId": 806270,
+    "source": "https://freesound.org/people/Sadiquecat/sounds/806270/",
+    "license": "CC0-1.0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "audioUrl": "https://cdn.freesound.org/previews/806/806270_5287430-hq.mp3",
+    "sha256": "c4b291e43344e7f11c8db9d4a4db2698193bb1c8243cf249f4f1f4235b252873"
+  }
+]
